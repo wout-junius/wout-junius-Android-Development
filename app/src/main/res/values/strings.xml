@@ -1,3 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">BrusselTourist</string>
+    <string name="mapbox_access_token" tools:ignore="Typos">pk.eyJ1Ijoid291dGp1bml1cyIsImEiOiJja3hrNjZmYTg2bHJnMnBsYXhnYW5qNDBmIn0.m36PUlCS0TbHXRpaNp3mwQ</string>
 </resources>
