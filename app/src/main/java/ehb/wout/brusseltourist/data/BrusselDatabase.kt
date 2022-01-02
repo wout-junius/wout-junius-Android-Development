@@ -8,7 +8,7 @@ import ehb.wout.brusseltourist.data.DAO.ComicWallDao
 import ehb.wout.brusseltourist.data.enitities.ComicWall
 import ehb.wout.brusseltourist.data.enitities.Photo
 
-@Database(entities = [ComicWall::class, Photo::class], version = 1, exportSchema = false)
+@Database(entities = [ComicWall::class, Photo::class], version = 3, exportSchema = false)
 abstract class BrusselDatabase : RoomDatabase() {
 
     abstract fun comicWallDao(): ComicWallDao
@@ -27,7 +27,7 @@ abstract class BrusselDatabase : RoomDatabase() {
                     context.applicationContext,
                     BrusselDatabase::class.java,
                     "brussel_database"
-                ).allowMainThreadQueries().build()
+                ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }

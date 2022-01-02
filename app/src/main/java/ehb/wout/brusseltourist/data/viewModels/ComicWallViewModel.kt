@@ -1,20 +1,112 @@
 package ehb.wout.brusseltourist.data.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.*
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import ehb.wout.brusseltourist.data.BrusselDatabase
 import ehb.wout.brusseltourist.data.enitities.ComicWall
+import ehb.wout.brusseltourist.data.enitities.Photo
 import ehb.wout.brusseltourist.data.repositories.ComicWallRepository
-import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
-class ComicWallViewModel(private val repository: ComicWallRepository) : ViewModel() {
-    val allComicWalls: List<ComicWall> = repository.readAllData
+class ComicWallViewModel(application: Application): ViewModel() {
+    private var comicWallRepository: ComicWallRepository? = null
+    private var db: BrusselDatabase? = null
+    private var queue: RequestQueue? = null
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
-    fun insert(comicWall: ComicWall) = viewModelScope.launch {
-        repository.addComicWall(comicWall)
+    init {
+        db = BrusselDatabase.getDatabase(application)
+        comicWallRepository = ComicWallRepository(db!!.comicWallDao())
+        queue = Volley.newRequestQueue(application)
+    }
+    private val comicWalls: List<ComicWall> = loadComicWalls()
+
+    fun getComicWalls(): List<ComicWall> {
+        return comicWalls
+    }
+
+    private fun loadComicWalls(): List<ComicWall> {
+        var data = comicWallRepository!!.readAllData
+        if(data.isEmpty()){
+            loadInAPIData()
+            data = ComicWallRepository(db!!.comicWallDao()).readAllData
+        }
+        return data
+    }
+
+    private fun loadInAPIData() {
+        // Instantiate the RequestQueue.
+
+        val url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=comic-book-route"
+        //Make session
+        val stringRequest2 = JsonObjectRequest(
+            Request.Method.GET, "https://bruxellesdata.opendatasoft.com", null, null, null)
+
+        // Request a string response from the provided URL.
+        val stringRequest = JsonObjectRequest(
+            Request.Method.GET, url, null, { response ->
+                loadData(response.getJSONArray("records"))
+            },
+            { error ->
+                Log.e("Error", error.toString())
+                throw error
+            })
+
+        // Add the request to the RequestQueue.
+        queue!!.add(stringRequest2)
+        queue!!.add(stringRequest)
+    }
+
+    private fun loadData(APIData: JSONArray) {
+        for (number in 0 until APIData.length()-1) run {
+            val comicWall = parseComicWall(APIData.getJSONObject(number))
+            comicWallRepository!!.addComicWall(comicWall)
+        }
+    }
+
+    private fun parseComicWall(comicWallJson: JSONObject): ComicWall {
+        var photo: Photo?
+        val fields = comicWallJson.getJSONObject("fields")
+        try{
+            photo = parsePhoto(fields.getJSONObject("photo"))
+        } catch (exception: JSONException){
+            photo = null
+        }
+        return ComicWall(
+            comicWallJson.getString("recordid"),
+            fields.getString("auteur_s"),
+            fields.getJSONArray("coordonnees_geographiques").getDouble(1),
+            fields.getJSONArray("coordonnees_geographiques").getDouble(0),
+            fields.getString("personnage_s"),
+            photo
+        )
+    }
+
+    private fun parsePhoto(photoJson: JSONObject): Photo {
+
+        return Photo(
+            photoJson.getString("id"),
+            photoJson.getString("filename"),
+            photoJson.getInt("height"),
+            photoJson.getInt("width"),
+            photoJson.getBoolean("thumbnail")
+        )
+    }
+
+}
+
+class ComicWallViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ComicWallViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ComicWallViewModel(application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

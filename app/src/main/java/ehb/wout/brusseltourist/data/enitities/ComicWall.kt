@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "comic_wall_table")
 data class ComicWall(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "comicWall_id") val comicWallId: Int,
+    @PrimaryKey val comicWallId: String,
     val author: String,
     val longitude: Double,
     val latitude: Double,
     val personages: String,
-    @Embedded val photo: Photo
+    @Embedded val photo: Photo?
 )
