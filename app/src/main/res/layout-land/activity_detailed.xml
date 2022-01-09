@@ -10,20 +10,20 @@
         android:id="@+id/detailed_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/wall_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@string/wall_image" />
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/detailed_title_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
         android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailed_image_view"
         tools:text="Title" />
@@ -32,23 +32,24 @@
         android:id="@+id/detailed_author_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="12dp"
-        tools:text="Author"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="@+id/detailed_title_view"
-        app:layout_constraintTop_toBottomOf="@+id/detailed_title_view" />
+        app:layout_constraintTop_toBottomOf="@+id/detailed_title_view"
+        tools:text="Author" />
 
     <com.mapbox.maps.MapView
         android:id="@+id/detailed_map_view"
         android:name="map"
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/detailed_image_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailed_author_view"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/detailed_image_view"
+        app:layout_constraintTop_toTopOf="parent"
         app:mapbox_cameraTargetLat="50.8476"
         app:mapbox_cameraTargetLng="4.3572"
         app:mapbox_cameraZoom="10.0" />
