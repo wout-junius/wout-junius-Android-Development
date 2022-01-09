@@ -35,32 +35,39 @@ class ComicWallViewModel(application: Application): ViewModel() {
         var data = comicWallRepository!!.readAllData
         if(data.isEmpty()){
             loadInAPIData()
-            data = ComicWallRepository(db!!.comicWallDao()).readAllData
+            do {
+                data = ComicWallRepository(db!!.comicWallDao()).readAllData
+            }while (data.isNotEmpty())
+
         }
         return data
     }
 
-    private fun loadInAPIData() {
+    private fun loadInAPIData(start: Int = 0) {
         // Instantiate the RequestQueue.
 
-        val url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=comic-book-route"
+        val url =
+            "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=comic-book-route&rows=20&start=$start"
         //Make session
         val stringRequest2 = JsonObjectRequest(
             Request.Method.GET, "https://bruxellesdata.opendatasoft.com", null, null, null)
+            // Request a string response from the provided URL.
+            val stringRequest = JsonObjectRequest(
+                Request.Method.GET, url, null, { response ->
+                    if(response.getJSONArray("records").length() == 0) return@JsonObjectRequest
+                    loadData(response.getJSONArray("records"))
+                    loadInAPIData(start + 20)
 
-        // Request a string response from the provided URL.
-        val stringRequest = JsonObjectRequest(
-            Request.Method.GET, url, null, { response ->
-                loadData(response.getJSONArray("records"))
-            },
-            { error ->
-                Log.e("Error", error.toString())
-                throw error
-            })
+                },
+                { error ->
+                    Log.e("Error", error.toString())
+                    throw error
+                })
 
-        // Add the request to the RequestQueue.
-        queue!!.add(stringRequest2)
-        queue!!.add(stringRequest)
+            // Add the request to the RequestQueue.
+            queue!!.add(stringRequest2)
+            queue!!.add(stringRequest)
+
     }
 
     private fun loadData(APIData: JSONArray) {

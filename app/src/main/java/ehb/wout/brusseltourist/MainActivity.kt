@@ -9,35 +9,36 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import com.mapbox.geojson.Point
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
-import com.mapbox.maps.plugin.annotation.annotations
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
-import ehb.wout.brusseltourist.data.BrusselDatabase
-import ehb.wout.brusseltourist.data.enitities.ComicWall
-import ehb.wout.brusseltourist.data.enitities.Photo
-import ehb.wout.brusseltourist.data.repositories.ComicWallRepository
-import ehb.wout.brusseltourist.data.viewModels.ComicWallViewModel
-import ehb.wout.brusseltourist.data.viewModels.ComicWallViewModelFactory
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import kotlin.system.*
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import ehb.wout.brusseltourist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private var mapView: MapView? = null
-    private var comicWalls: List<ComicWall>? = null
-
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val navView: BottomNavigationView = binding.navView
+
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_map, R.id.navigation_list
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
+
+
 }

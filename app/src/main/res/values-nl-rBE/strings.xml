@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BrusselTourist</string>
+    <string name="title_map">Kaart</string>
+    <string name="title_list">Lijst</string>
+    <string name="wall_image">muur foto</string>
+</resources>

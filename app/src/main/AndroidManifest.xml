@@ -16,6 +16,10 @@
         android:theme="@style/Theme.BrusselTourist"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".DetailedActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

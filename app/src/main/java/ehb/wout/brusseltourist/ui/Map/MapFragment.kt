@@ -1,4 +1,4 @@
-package ehb.wout.brusseltourist
+package ehb.wout.brusseltourist.ui.Map
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,6 +21,7 @@ import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import ehb.wout.brusseltourist.R
 import ehb.wout.brusseltourist.data.enitities.ComicWall
 import ehb.wout.brusseltourist.data.viewModels.ComicWallViewModel
 import ehb.wout.brusseltourist.data.viewModels.ComicWallViewModelFactory
